@@ -1,1 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Wellness Tales - Interactive Stories</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Comic Sans MS', 'Trebuchet MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        header h1 {
+            font-size: 3em;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .story-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .story-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .story-emoji {
+            font-size: 4em;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .story-card h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .story-category {
+            display: inline-block;
+            background: #f0f0f0;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .story-preview {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            min-height: 60px;
+        }
+
+        .wellness-tip {
+            background: #e8f5e9;
+            padding: 12px;
+            border-left: 4px solid #4caf50;
+            border-radius: 5px;
+            font-size: 0.9em;
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .read-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .read-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 3% auto;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 800px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            color: #667eea;
+            font-size: 2em;
+            flex-grow: 1;
+        }
+
+        .modal-emoji {
+            font-size: 2.5em;
+            margin-right: 15px;
+        }
+
+        .close-btn {
+            color: #667eea;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            transform: scale(1.2);
+            color: #764ba2;
+        }
+
+        .story-content {
+            color: #333;
+            line-height: 1.8;
+            font-size: 1.05em;
+            margin-bottom: 25px;
+        }
+
+        .story-content p {
+            margin-bottom: 15px;
+        }
+
+        .story-lesson {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 25px;
+        }
+
+        .story-lesson h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .wellness-tips-section {
+            background: #f5f5f5;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+
+        .wellness-tips-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .tip-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #667eea;
+        }
+
+        .tip-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .tip-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scrollbar styling */
+        .modal-content::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                padding: 20px;
+            }
+
+            .stories-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌟 Kids Wellness Tales 🌟</h1>
+            <p>Magical Stories for Happy & Healthy Children</p>
+        </header>
+
+        <div class="stories-grid" id="storiesGrid"></div>
+
+        <div class="wellness-tips-section">
+            <h2>💪 Daily Wellness Reminders</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h3>🥤 Stay Hydrated</h3>
+                    <p>Drink water throughout the day! A healthy body needs plenty of water to function properly.</p>
+                </div>
+                <div class="tip-card">
+                    <h3>🌳 Outdoor Time</h3>
+                    <p>Spend time in nature and play outside. Fresh air and sunshine are great for your body and mind!</p>
+                </div>
+                <div class="tip-card">
+                    <h3>🧘 Be Mindful</h3>
+                    <p>Take deep breaths and notice the present moment. Mindfulness helps reduce stress and anxiety.</p>
+                </div>
+                <div class="tip-card">
+                    <h3>😴 Quality Sleep</h3>
+                    <p>Get 8-10 hours of sleep every night. Sleep helps your body grow and recharge!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for full stories -->
+    <div id="storyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-emoji" id="modalEmoji"></span>
+                <h2 id="modalTitle"></h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="story-content" id="modalBody"></div>
+            <div class="story-lesson" id="modalLesson"></div>
+        </div>
+    </div>
+
+    <script>
+        const stories = [
+            {
+                id: 1,
+                title: "Luna's Calm Breath",
+                emoji: "🌙",
+                category: "Mindfulness",
+                preview: "Luna the bunny learns to use deep breathing to calm her worries...",
+                fullStory: `Luna was a little white bunny who lived in a cozy burrow at the edge of the Whispering Woods. Every day, Luna would run around playing with her friends, but sometimes she felt worried and anxious about little things.
+
+One sunny afternoon, Luna was playing hide-and-seek with her friends when she couldn't find them anywhere. Her heart started beating very fast, and she felt scared and alone. Luna sat down under a big oak tree and started to cry.
+
+Just then, a wise old owl named Oliver landed on a branch nearby. "Why are you crying, little Luna?" asked Oliver gently.
+
+"I'm scared! I can't find my friends, and I feel so worried inside," said Luna with tears in her eyes.
+
+Oliver smiled warmly. "I have a special secret for you, Luna. It's called the Calm Breath. When you feel worried or scared, you can use this magic breathing to help you feel better."
+
+Oliver showed Luna how to breathe: "First, breathe in slowly through your nose for a count of four... hold it... now breathe out slowly through your mouth for a count of four. Do this three times, and feel the worry float away like clouds in the sky."
+
+Luna tried it. Breathe in... hold... breathe out. Breathe in... hold... breathe out. Breathe in... hold... breathe out.
+
+Suddenly, Luna felt calm and peaceful inside. The worry that was tight in her chest loosened up. She smiled at Oliver and said, "Thank you! I feel so much better!"
+
+Just then, Luna heard voices calling her name. "Luna! Where are you?" Her friends came running out from behind the trees. They had been looking for her too!
+
+Luna ran to hug her friends, and she told them all about Oliver's Calm Breath. Her friends learned it too, and soon all the little animals in the forest were using the Calm Breath whenever they felt worried.
+
+From that day on, Luna knew that whenever she felt scared or anxious, she just needed to take three calm breaths, and everything would be okay. The Calm Breath became her superpower!
+
+The End 🌙`,
+                lesson: "💡 Wellness Lesson: When you feel worried or scared, try the Calm Breath! Breathe in slowly through your nose for 4 counts, hold it, then breathe out through your mouth for 4 counts. This helps your body relax and your mind become peaceful.",
+                tip: "Practice this breathing exercise when you feel nervous about school or any new situation!"
+            },
+            {
+                id: 2,
+                title: "Terry the Turtle's Adventure",
+                emoji: "🐢",
+                category: "Exercise",
+                preview: "A slow but determined turtle discovers the joy of movement and exercise...",
+                fullStory: `Terry was a little turtle who loved to spend his days hiding in his shell, munching on leaves and watching the world go by. He thought that moving around was too tiring and that rest was all he needed.
+
+One day, Terry noticed his friend Felix the Frog zooming around the pond, jumping and playing, laughing and having the most wonderful time. Terry called out, "Felix! Why do you jump around so much? Don't you get tired?"
+
+Felix landed right next to Terry and said, "Tired? Terry, I feel MORE energy after I play! Come on, let me show you something amazing!"
+
+Reluctant at first, Terry slowly stepped out of his shell. Felix hopped ahead and said, "Let's race! I'll race you to the big rock by the water!"
+
+Terry had never raced before. He started walking slowly, but Felix encouraged him: "Come on, Terry! You can do it! Every step counts!"
+
+As Terry walked faster and faster, something magical happened. His body felt lighter, his breathing became deeper, and he started to feel... happy! Really happy!
+
+When Terry reached the rock, he was tired, but it was a good tired. His heart was beating strong, his muscles felt warm, and his mind felt clear and focused.
+
+"Wow!" said Terry, breathing heavily but smiling big. "I feel amazing!"
+
+Felix grinned. "That's the power of movement, buddy! When you exercise, your body releases happy chemicals called endorphins. They make you feel joyful and strong!"
+
+Every single day after that, Terry would go on little adventures. Sometimes he'd walk around the pond, sometimes he'd climb on rocks, and sometimes he'd even do gentle stretches. Each day, he felt stronger, faster, and happier than before.
+
+Terry even inspired other animals! Soon, the whole pond community was moving and playing together. They had dance parties, relay races, and fun exercise games.
+
+Terry learned that exercise wasn't about being the fastest or the strongest. It was about feeling good in your body, being strong and healthy, and having fun with friends!
+
+The End 🐢`,
+                lesson: "💡 Wellness Lesson: Exercise is not just good for your body—it's good for your mood and mind too! When you move your body, it releases happy chemicals that make you feel joyful. Try walking, dancing, playing, or any movement you enjoy for at least 30 minutes every day!",
+                tip: "Find a fun activity you love—dancing, sports, bike riding, or playing tag—and do it regularly!"
+            },
+            {
+                id: 3,
+                title: "Oliver's Rainbow Plate",
+                emoji: "🌈",
+                category: "Nutrition",
+                preview: "A young deer learns about eating colorful, nutritious foods...",
+                fullStory: `Oliver was a young deer who lived with his family in a sunny meadow. Every day, his mother would prepare his meals, but Oliver only wanted to eat the same thing: grass, grass, and more grass.
+
+"Come on, Oliver," said his mother. "There are so many yummy and healthy foods to try!"
+
+But Oliver would shake his head and say, "Grass is all I need, Mama. I don't want any of that other stuff!"
+
+One day, Oliver was playing with his friend Rosa, a bright red cardinal. Rosa was eating seeds and berries, and they looked so colorful!
+
+"Rosa, what are you eating?" asked Oliver.
+
+"I'm eating my Rainbow Plate!" said Rosa proudly. "I eat red berries, yellow seeds, green leaves, and orange carrots. Each color has special powers that make my feathers shiny and my voice strong!"
+
+Oliver looked curious. "Different colors have different powers?"
+
+"Yes!" said Rosa. "Let me show you! Come with me!"
+
+Rosa took Oliver to meet various animals who shared their color secrets:
+
+🔴 RED—Strawberry the fox told Oliver that red foods like berries and tomatoes have special power to keep his heart strong and his energy high.
+
+🟡 YELLOW—Sunny the duckling showed him that yellow foods like bananas and squash help his bones grow strong and his eyes see clearly.
+
+🟢 GREEN—Gus the grasshopper explained that green foods like spinach and kale make his muscles strong and help him think better.
+
+🟠 ORANGE—Orla the orangutan shared that orange foods like carrots and sweet potatoes help his eyes work well and keep his skin healthy.
+
+🟣 PURPLE—Percy the porcupine said that purple foods like grapes and blueberries make his brain smart and help him remember things.
+
+Oliver was amazed! "So if I eat all these colors, I become stronger and healthier?"
+
+"Exactly!" said all his new friends together. "It's called eating a Rainbow Plate!"
+
+That evening, Oliver went home and asked his mother, "Mama, can we make a Rainbow Plate for dinner?"
+
+His mother smiled brightly. "Of course, sweetheart! I've been waiting for you to ask!"
+
+Together, they prepared a beautiful meal with all the colors of the rainbow. Oliver tried each food carefully, and to his surprise, everything tasted delicious! His favorite was the orange carrots.
+
+Within a few weeks of eating his Rainbow Plate every day, Oliver felt amazing! He had more energy to play, he felt stronger, his fur looked shinier, and even his thinking became clearer.
+
+Oliver became so excited about nutrition that he taught all the other young animals in the meadow about Rainbow Plates. Soon, the entire forest community was eating more colorfully and healthily!
+
+The End 🌈`,
+                lesson: "💡 Wellness Lesson: Eat foods of different colors every day! Each color has different nutrients that help your body in different ways. Try to include red, yellow, green, orange, and purple foods in your meals to get all the vitamins and minerals you need to be healthy and strong!",
+                tip: "Create your own Rainbow Plate at lunch or dinner—try to include at least 5 different colors!"
+            },
+            {
+                id: 4,
+                title: "Sophie's Sleepy-Time Song",
+                emoji: "😴",
+                category: "Sleep",
+                preview: "A little owl discovers the magic of good sleep and bedtime routines...",
+                fullStory: `Sophie was a little barn owl who lived in a tall oak tree. Unlike other owls who slept during the day and stayed awake at night, Sophie's family wanted her to sleep at night too, like most children.
+
+But Sophie had a big problem: she just couldn't fall asleep! She would toss and turn in her nest, her mind full of thoughts and ideas. She would worry about tomorrow, she would think about the things she wanted to do, and sometimes she would just lie there feeling frustrated.
+
+Because Sophie wasn't getting enough sleep, she felt grumpy, tired, and couldn't concentrate during the day. She would fly into trees, forget things, and feel sad for no reason.
+
+One evening, Sophie's grandmother, Olivia, came to visit. She noticed Sophie looking very tired and grumpy.
+
+"Sophie, my dear, what's wrong?" asked Grandmother Olivia.
+
+"I can't fall asleep, Grandma!" said Sophie sadly. "I try and try, but my brain won't stop thinking, and my body won't relax."
+
+Grandmother Olivia smiled knowingly. "Ah, I remember feeling that way when I was your age. But I learned a special secret that helps me fall asleep easily. It's called the Sleepy-Time Song, and tonight, I'll teach it to you."
+
+Grandmother Olivia started to sing a soft, gentle lullaby. The melody was so soothing and calming that Sophie felt her body begin to relax. But that wasn't all Grandmother shared!
+
+She also taught Sophie a special Sleepy-Time routine:
+
+📱 **No Screens:** Grandmother said, "Put away your toys and bright lights one hour before bed. The bright lights keep your brain awake."
+
+📚 **Calm Activity:** She showed Sophie how to read a quiet story or look at peaceful pictures.
+
+🛁 **Warm Bath:** A warm bath helps your body know it's time to relax.
+
+🏞️ **Cool Room:** Grandmother explained, "A cool, dark room is perfect for sleeping. Your body likes to sleep when it's cool and dark."
+
+🧘 **Deep Breathing:** Just before sleep, Grandmother taught Sophie to take five deep breaths—in and out, in and out—very slowly.
+
+🎵 **The Sleepy-Time Song:** Finally, she taught Sophie the special lullaby to sing softly to herself.
+
+That night, Sophie tried everything her grandmother taught her. She put away her toys, read a quiet story, took a warm bath, made sure her room was cool and dark, took five deep breaths, and sang the Sleepy-Time Song.
+
+Within minutes, Sophie felt her eyes getting heavy. Her body felt warm and comfortable in her nest. Her mind became quiet and peaceful. And then... she fell asleep!
+
+Sophie woke up the next morning feeling completely refreshed! She had energy, she felt happy, and she was ready to play!
+
+Night after night, Sophie used her Sleepy-Time routine, and she slept beautifully. Her teacher noticed she was more focused in class, her mood was happier, and she even flew faster because she had so much energy!
+
+Soon, all the young owls in the forest wanted to learn Sophie's Sleepy-Time routine. Grandmother Olivia taught them all, and everyone started sleeping better.
+
+Sophie realized that sleep wasn't boring or a waste of time. Sleep was magic! It was when her body grew, her mind healed, and her energy recharged for another wonderful day of adventures.
+
+The End 😴`,
+                lesson: "💡 Wellness Lesson: Good sleep is super important! You need 8-10 hours of sleep every night. Create a Sleepy-Time routine: put away screens 1 hour before bed, read a calm story, take a warm bath, keep your room cool and dark, take deep breaths, and maybe sing a lullaby. Your body will love you for it!",
+                tip: "Try the same bedtime routine every night so your body knows when it's time to sleep!"
+            },
+            {
+                id: 5,
+                title: "Bella's Feelings Garden",
+                emoji: "🌻",
+                category: "Emotions",
+                preview: "A young butterfly learns to understand and express her feelings...",
+                fullStory: `Bella was a beautiful butterfly with purple and blue wings. She lived in a magical garden filled with flowers of every color.
+
+But inside, Bella had a secret problem: her feelings confused her. Sometimes she felt happy, sometimes sad, sometimes angry, and sometimes scared. She didn't know how to talk about these feelings, so she would just hide in a corner and feel confused and alone.
+
+One day, an elderly butterfly named Beatrice landed next to Bella. She had beautiful golden wings and a very kind face.
+
+"Hello there, little one," said Beatrice. "I can see you're feeling something inside. What's happening in your heart?"
+
+Bella looked at Beatrice and said quietly, "I don't know what I'm feeling. My feelings are so big and so mixed up. Sometimes I feel happy, then suddenly I feel sad. I don't understand myself."
+
+Beatrice smiled gently. "Come with me, dear. I want to show you something special."
+
+She flew with Bella to a hidden part of the garden. There, Bella saw something amazing: a garden of feelings! Each flower represented a different feeling.
+
+🌼 YELLOW flowers were HAPPY feelings—bright, warm, and full of energy.
+
+🩵 BLUE flowers were SAD feelings—deep, quiet, and sometimes lonely.
+
+❤️ RED flowers were ANGRY feelings—strong, fiery, and powerful.
+
+🤎 BROWN flowers were SCARED feelings—small, worried, and protective.
+
+🧡 ORANGE flowers were EXCITED feelings—energetic, bouncy, and adventurous.
+
+💚 GREEN flowers were CALM feelings—peaceful, steady, and safe.
+
+💜 PURPLE flowers were LOVE feelings—warm, connected, and caring.
+
+"These are all the feelings you can have," explained Beatrice. "And here's the beautiful thing: all of them are okay! All of them are normal! All of them are important!"
+
+Bella looked confused. "But I thought I should only feel happy all the time?"
+
+"Oh, no, dear," said Beatrice. "If you only felt happy, you wouldn't know what happy really feels like. Our sad days make us appreciate happy days. Our scared moments help us be brave. Our angry moments help us stand up for what we believe in. Every feeling is important and has a purpose."
+
+Beatrice continued teaching Bella:
+
+"When you feel happy, CELEBRATE! Dance, sing, play, and share your joy with others!
+
+When you feel sad, it's okay to CRY. Crying helps release the sadness. Talk to someone you trust about why you're sad.
+
+When you feel angry, it's okay to be ANGRY! But instead of hurting others, try hitting a pillow, running fast, or drawing angry pictures.
+
+When you feel scared, it's okay to be SCARED! Tell someone who can help you, like a parent or teacher. Hugs help too!
+
+When you feel excited, let it OUT! Jump, shout, run around, and let others know how you feel!
+
+When you feel calm, enjoy it! Sit quietly, breathe, and appreciate the peacefulness."
+
+Bella realized something important: "So feelings are like weather? Sometimes it's sunny, sometimes it rains, sometimes it's stormy. But the weather always changes?"
+
+"Exactly!" said Beatrice happily. "Your feelings are like weather too. They come and they go. And they're all beautiful and important!"
+
+From that day forward, Bella started to understand her feelings better. When she felt happy, she celebrated. When she felt sad, she allowed herself to cry and talked to someone. When she felt scared, she asked for help. When she felt angry, she found healthy ways to express it.
+
+Bella also started keeping a Feelings Garden journal. Every day, she would draw flowers that matched her feelings and write about why she felt that way. This helped her understand herself better.
+
+Soon, Bella noticed something wonderful: because she was accepting all her feelings and expressing them in healthy ways, she actually felt happier overall! Not all the time happy, but peaceful and balanced.
+
+Bella taught all the other butterflies and insects in the garden about their Feelings Gardens too. The whole garden became more peaceful and loving because everyone understood and accepted their feelings.
+
+The End 🌻`,
+                lesson: "💡 Wellness Lesson: All your feelings are okay and normal! Happy, sad, angry, scared, excited, calm—they're all part of being you. The important thing is to understand your feelings and express them in healthy ways. Try keeping a Feelings Journal where you draw or write about how you feel every day.",
+                tip: "Name your feelings when you have them. Say 'I feel happy because...' or 'I feel sad because...' This helps you understand yourself better!"
+            },
+            {
+                id: 6,
+                title: "Max's Kindness Quest",
+                emoji: "💝",
+                category: "Friendship",
+                preview: "A young lion learns that kindness and friendship make the world beautiful...",
+                fullStory: `Max was a young lion cub with a big mane and an even bigger heart. He lived in a vast African savanna where many animals lived together.
+
+One day, Max woke up feeling sad for no particular reason. He went to visit his friends, but when he saw them playing, he just sat under a tree and watched. He didn't feel like joining in.
+
+His best friend, Mia the giraffe, noticed Max sitting alone. She walked over and asked, "Max, why are you sitting alone? Don't you want to play with us?"
+
+"I don't know," said Max sadly. "I just feel... empty inside. Like something is missing."
+
+Mia thought for a moment, then said, "I know what you need! You need to go on a Kindness Quest! Come with me!"
+
+Max didn't understand, but he followed Mia to meet an old wise elephant named Ella.
+
+Ella smiled at Max and said, "Young one, it sounds like your heart needs to give kindness to others. When we give kindness, we receive happiness in return. Would you like to go on a Kindness Quest?"
+
+Max nodded, and Ella explained the quest: "For seven days, I want you to do seven acts of kindness. For each act, something magical will happen to your heart."
+
+**Day 1 - Small Kindness:** Max saw a baby rabbit that looked sad because it had lost its way. Max spent time talking to the rabbit and helped it find its way home. When he did, the rabbit hugged him, and Max felt warmth in his chest.
+
+**Day 2 - Listening Kindness:** Max sat with a lonely old tortoise and listened to her stories for hours. She smiled more than Max had ever seen her smile. Max felt his heart get lighter.
+
+**Day 3 - Helping Kindness:** Max helped a struggling antelope carry heavy branches for her nest. Even though it was hard work, Max felt proud and strong inside.
+
+**Day 4 - Sharing Kindness:** Max had saved his favorite watering hole to drink from, but he shared it with other animals who were thirsty. Seeing their happiness made Max feel generous and full of love.
+
+**Day 5 - Teaching Kindness:** Max taught a young bird how to fly properly when it was struggling. Watching the bird soar in the sky filled Max with hope and joy.
+
+**Day 6 - Forgiving Kindness:** Max had been angry with a monkey who had played a mean prank on him. Instead of staying angry, Max forgave him and gave him a big hug. The heavy feeling in Max's heart disappeared.
+
+**Day 7 - Love Kindness:** Max spent the whole day doing random acts of kindness—a smile to everyone he met, help to anyone who needed it, and encouragement to those who felt down.
+
+By the end of the seven days, Max felt completely different! His heart was so full of joy and happiness that it seemed to shine from within.
+
+Ella gathered Max and all the animals Max had helped, and said, "Look around you, Max. See all these friends who care about you? This is what kindness creates. When you give kindness, you create friendships. When you create friendships, you create a beautiful community. And when you're part of a beautiful community, your heart is never empty again."
+
+All the animals Max had helped came and thanked him. They gave him hugs, and they told him how much his kindness had meant to them.
+
+Max realized something important: "When I was trying to feel happy by myself, I felt sad. But when I focused on making others happy through kindness, I became the happiest I've ever been!"
+
+From that day on, Max continued his random acts of kindness. And the amazing thing? The more kind Max was, the kinder everyone around him became. It was like kindness was contagious! It spread from one animal to another like a beautiful wave.
+
+Soon, the entire savanna was filled with kindness. Animals helped each other, forgave each other, and celebrated each other. And at the center of it all was Max, the lion who learned that friendship and kindness make the world truly beautiful.
+
+The End 💝`,
+                lesson: "💡 Wellness Lesson: Kindness is powerful! When you are kind to others, you not only make them happy, but you also make yourself happy. Try doing one random act of kindness every day—help someone, listen to a friend, give a hug, or share a smile. Kindness creates beautiful friendships and a beautiful world!",
+                tip: "Keep a kindness list—every time you do something kind, write it down. You'll be amazed at how many kind things you do!"
+            }
+        ];
+
+        // Render story cards
+        function renderStories() {
+            const grid = document.getElementById('storiesGrid');
+            grid.innerHTML = '';
+
+            stories.forEach(story => {
+                const card = document.createElement('div');
+                card.className = 'story-card';
+                card.onclick = () => openModal(story.id);
+                card.innerHTML = `
+                    <div class="story-emoji">${story.emoji}</div>
+                    <h2>${story.title}</h2>
+                    <div class="story-category">${story.category}</div>
+                    <p class="story-preview">${story.preview}</p>
+                    <div class="wellness-tip"><strong>💡 Tip:</strong> ${story.tip}</div>
+                    <button class="read-btn">📖 Read Full Story</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Open modal with full story
+        function openModal(storyId) {
+            const story = stories.find(s => s.id === storyId);
+            if (!story) return;
+
+            document.getElementById('modalEmoji').textContent = story.emoji;
+            document.getElementById('modalTitle').textContent = story.title;
+            document.getElementById('modalBody').innerHTML = story.fullStory.split('\n').map(para => 
+                para.trim() ? `<p>${para}</p>` : ''
+            ).join('');
+            document.getElementById('modalLesson').innerHTML = `
+                <h3>💡 Wellness Lesson</h3>
+                <p>${story.lesson.replace('💡 Wellness Lesson: ', '')}</p>
+            `;
+
+            document.getElementById('storyModal').style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('storyModal').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Allow scrolling
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('storyModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Render stories on page load
+        renderStories();
+    </script>
+</body>
+</html>
